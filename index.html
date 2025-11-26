@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ScreenTime Guardian — Parent Dashboard</title>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />   
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="logo-text">
+          <h1>ScreenTime Guardian</h1>
+          <div class="subtitle">Advanced parental controls with AI-powered guidance</div>
+        </div>
+      </div>
+      <div class="topbar">
+        <div class="child-badge">
+          <i class="fas fa-user"></i>
+          <span>Child: <strong id="childName">Alex</strong></span>
+        </div>
+        <button id="exportBtn" class="btn btn-outline">
+          <i class="fas fa-file-export"></i> Export Report
+        </button>
+        <button id="resetAll" class="btn btn-outline">
+          <i class="fas fa-redo"></i> Reset All
+        </button>
+      </div>
+    </header>
+
+    <!-- Left column: Apps and Controls -->
+    <section>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Daily Screen Time Limit</h2>
+            <div class="card-subtitle">Set and monitor your child's total screen time allowance</div>
+          </div>
+        </div>
+        
+        <div class="total-limit-container">
+          <div class="limit-controls">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+              <input id="totalLimit" type="number" min="0" step="5" value="240" class="control-input">
+              <span class="control-label">minutes</span>
+              <button id="applyTotal" class="btn btn-primary">Apply</button>
+            </div>
+            
+            <div class="progress-container">
+              <div class="progress-bar">
+                <div class="progress-fill" id="totalProgress" style="width: 0%"></div>
+              </div>
+              <div class="progress-stats">
+                <span id="totalUsed">00:00:00</span>
+                <span id="totalLimitDisplay">240 minutes</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="chart-wrapper">
+            <canvas id="totalChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Managed Applications</h2>
+            <div class="card-subtitle">Control usage for each application individually</div>
+          </div>
+          <div>
+            <button id="resetUsage" class="btn btn-outline">Reset Usage</button>
+          </div>
+        </div>
+
+        <div class="apps-grid" id="appsContainer">
+          <!-- apps inserted by JS -->
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Usage Analytics</h2>
+            <div class="card-subtitle">Detailed breakdown of screen time by application</div>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-wrapper">
+            <canvas id="appChart"></canvas>
+          </div>
+          
+          <div class="selected-app-info">
+            <div class="info-item">
+              <div class="info-label">Selected App</div>
+              <div id="selectedAppTitle" class="info-value">—</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Time Limit</div>
+              <div id="selectedAppLimit" class="info-value">—</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Current Status</div>
+              <div id="selectedAppStatus" class="info-value">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right column: AI avatar & chat -->
+    <aside>
+      <div class="card ai-chat">
+        <div class="chat-header">
+          <div>
+            <h2 class="card-title">AI Parenting Advisor</h2>
+            <div class="card-subtitle">Get personalized advice on screen time management</div>
+          </div>
+          <button id="clearChat" class="btn btn-outline">
+            <i class="fas fa-trash"></i> Clear
+          </button>
+        </div>
+
+        <div class="messages" id="messages">
+          <div class="message ai">
+            <div class="message-header">
+              <i class="fas fa-robot"></i> AI Advisor
+            </div>
+            <p>Hello! I'm your ScreenTime Guardian advisor. I can help you set healthy screen time limits, create balanced schedules, and provide guidance on digital wellbeing for your child.</p>
+          </div>
+        </div>
+
+        <div class="chat-input-container">
+          <textarea id="chatInput" placeholder="Ask for advice on screen time management, healthy limits, or digital wellbeing..."></textarea>
+          <button id="sendBtn" class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        
+        <div class="chat-actions">
+          <button id="sampleTips" class="btn btn-outline">
+            <i class="fas fa-lightbulb"></i> Get Sample Tips
+          </button>
+          <button id="askAI" class="btn btn-primary" style="background: linear-gradient(135deg, #ec4899, #8b5cf6);">
+            <i class="fas fa-external-link-alt"></i> Access Full AI Advisor Platform
+          </button>
+        </div>
+      </div>
+
+      <div class="avatar-section">
+        <div class="avatar-header">
+          <div class="avatar-icon">
+            <i class="fas fa-comments"></i>
+          </div>
+          <div>
+            <h3 class="avatar-title">Advanced Parenting Guidance</h3>
+            <div class="avatar-subtitle">Comprehensive advice platform with personalized recommendations</div>
+          </div>
+        </div>
+        
+        <p style="margin-bottom: 20px; color: var(--text-secondary);">
+          Our full AI advisor platform provides in-depth guidance on digital parenting, including:
+        </p>
+        
+        <ul style="padding-left: 20px; margin-bottom: 20px; color: var(--text-secondary);">
+          <li style="margin-bottom: 8px;">Personalized screen time schedules</li>
+          <li style="margin-bottom: 8px;">Age-appropriate content recommendations</li>
+          <li style="margin-bottom: 8px;">Strategies for managing screen addiction</li>
+          <li>Digital wellbeing best practices</li>
+        </ul>
+        
+        <a href="#" target="_blank" class="btn btn-primary" style="width: 100%; display: block; text-align: center;">
+          <i class="fas fa-arrow-right"></i> Access Full Advisor Platform
+        </a>
+      </div>
+
+      <div class="quick-actions" style="margin-top: 24px;">
+        <button id="lockAll" class="action-btn lock-btn">
+          <i class="fas fa-lock"></i> Lock All Applications
+        </button>
+        <button id="unlockAll" class="action-btn unlock-btn">
+          <i class="fas fa-lock-open"></i> Unlock All Applications
+        </button>
+      </div>
+    </aside>
+
+    <footer>
+      ScreenTime Guardian MVP — Advanced Parental Controls & AI Guidance © 2025
+    </footer>
+  </div>
+
+  <!-- Toast notification container -->
+  <div id="toastContainer"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
